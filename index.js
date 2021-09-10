@@ -12,20 +12,20 @@ const axios = require('axios');
 /*Error mesages*/
 const messages = {
 	ru : {
-		operation_error : 'Указанная операция не определена в документации банка',
+		operation_error : 'Указанная операция не определена в документации',
 		params_invalid : 'Параметры должны быть переданы в виде массива',
 		callback_invalid : 'Требуется функция обратного вызова',
 		value_invalid : 'Параметр должен быть указан',
 		value_type_invalid : 'Некорректный тип данных ',
-		auth_invalid : 'Некорректные данные для авторизации, необходим либо токен либо имя пользователя и пароль. Для операции возврата имя пользователя и пароль обязательны.'
+		auth_invalid : 'Некорректные данные для авторизации, необходимы имя пользователя и пароль'
 	},
 	en : {
-		operation_error : 'The specified operation is not defined in the banks documentation',
+		operation_error : 'The specified operation is not defined in the documentation',
 		params_invalid : 'Parameters must be passed as an array',
 		callback_invalid : 'Callback function required',
 		value_invalid : 'Value must be specified',
 		value_type_invalid : 'Value type is incorrect ',
-		auth_invalid : 'Incorrect authorization data token or userName and password must be provided. For refund operation userName and password required.'
+		auth_invalid : 'Incorrect authorization userName and password must be provided'
 	}
 }
 
