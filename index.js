@@ -40,11 +40,12 @@ class IQSMS {
 	#language;
 	#username;
 	#password;
+	#signature;
 	/*Default REST point of IQSMS*/
 	execURLPrefix = `https://api.iqsms.ru/messages/v2/`;
 	execURLSuffix = `.json`;
 	/*Initialise class with "new"*/
-	constructor (userName, password, language, execURLPrefix, execURLSuffix) {
+	constructor (userName, password, language, signature, execURLPrefix, execURLSuffix) {
 		this.#language = language;
 
 		if (!userName || !password) {
@@ -53,6 +54,11 @@ class IQSMS {
 
 		this.#username = userName;
 		this.#password = password;
+
+		if (signature) {
+			this.#signature = signature;
+		}
+
 		/*If URLs not defines use default values*/
 		if (execURLPrefix) {
 			this.execURLPrefix = execURLPrefix;
@@ -73,6 +79,7 @@ class IQSMS {
 	
 	/*Unified execute action with callback*/
 	execute(operation, data, callback) {
+		let sdata = {};
 		if (!callback instanceof Function) {
 			throw messages[this.#language].callback_invalid;
 		} else if (!this.isArray(data)) {
@@ -82,17 +89,17 @@ class IQSMS {
 		} else {
 			/*Extend parameters by adding authorization token*/
 			if (this.#username && this.#password) {
-				data.login = this.#username;
-				data.password = this.#password;
+				sdata.login = this.#username;
+				sdata.password = this.#password;
 			}
 			if (data.length) {
-				data.messages = data;
+				sdata.messages = data;
 			}
 			/*Send data to server*/
 			axios({
 				method : 'POST', //as described in documentation (link above)
 				url : `${this.execURLPrefix}${operation}${this.execURLSuffix}`,
-				data : data
+				data : sdata
 			}).then(
 				(result) => {
 					/*If operation succeeded on API's side return data*/
@@ -124,7 +131,16 @@ class IQSMS {
 	}
 
 	/*Functions for most popular actions*/
-	send(messages) {
+	send(phone, message) {
+		let cphone = phone.replace(/[ ,\(,\),\-]/g, '');
+		let messages = [{
+			phone : cphone,
+			clientId : Math.round(Math.random() * 1000000),
+			text : message
+		}];
+		if (this.#signature) {
+			messages[0].sender = this.#signature;
+		}
 		return this.executePromise('send', messages);
 	}
 	
